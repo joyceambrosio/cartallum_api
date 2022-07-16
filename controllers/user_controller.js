@@ -1,20 +1,8 @@
 const multer = require('multer');
-// const sharp = require('sharp');
 const User = require('./../models/user_model');
 const catchAsync = require('./../utils/catch_async');
 const AppError = require('./../utils/app_error');
 const factory = require('./handler_factory');
-//const APIFeatures = require('../utils/api_features');
-
-// const multerStorage = multer.diskStorage({
-//   destination: function(req, file, cb) {
-//     cb(null, 'public/img/users');
-//   },
-//   filename: function(req, file, cb) {
-//     const ext = file.mimetype.split('/')[1];
-//     cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
-//   },
-// });
 
 exports.setFieldsForAutoCompete = (req, res, next) => {
   req.query.fields = 'id,name,photo,miniatura,role';
@@ -48,64 +36,6 @@ exports.injectPathToUpload = (req, res, next) => {
   req.folder = 'users';
   next();
 };
-
-// exports.resizeUserPhoto = (req, res, next) => {
-//   if (!req.file) return next();
-
-//   //const ext = req.file.mimetype.split('/')[1];
-//   const ext = 'jpeg';
-//   //req.file.filename = `user-${req.user.id}-${Date.now()}.${ext}`;
-//   req.file.filename = `user-${req.user.id}.${ext}`;
-//   req.file.buffer = sharp(req.file.buffer)
-//     .resize(500, 500)
-//     .toFormat('jpeg')
-//     .jpeg({ quality: 90 })
-//     .toBuffer();
-//   next();
-// };
-
-// exports.createMiniature = (req, res, next) => {
-//   if (!req.file) return next();
-
-//   const ext = 'jpeg';
-//   req.miniatura = `user-${req.user.id}-${Date.now()}-miniatura.${ext}`;
-
-//   sharp(req.file.buffer)
-//     .resize(50, 50)
-//     .toFormat('jpeg')
-//     .jpeg({ quality: 90 })
-//     .toFile(`public/img/users/${req.miniatura}`);
-//   next();
-// };
-
-// exports.resizeUserPhoto = (req, res, next) => {
-//   if (!req.file) return next();
-
-//   //const ext = req.file.mimetype.split('/')[1];
-//   const ext = 'jpeg';
-//   req.file.filename = `user-${req.user.id}-${Date.now()}.${ext}`;
-
-//   sharp(req.file.buffer)
-//     .resize(500, 500)
-//     .toFormat('jpeg')
-//     .jpeg({ quality: 90 })
-//     .toFile(`public/img/users/${req.file.filename}`);
-//   next();
-// };
-
-// exports.createMiniature = (req, res, next) => {
-//   if (!req.file) return next();
-
-//   const ext = 'jpeg';
-//   req.miniatura = `user-${req.user.id}-${Date.now()}-miniatura.${ext}`;
-
-//   sharp(req.file.buffer)
-//     .resize(50, 50)
-//     .toFormat('jpeg')
-//     .jpeg({ quality: 90 })
-//     .toFile(`public/img/users/${req.miniatura}`);
-//   next();
-// };
 
 exports.getMe = (req, res, next) => {
   req.params.id = req.user.id;

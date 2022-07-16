@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { bool } = require('sharp');
 
 const cestaSchema = new mongoose.Schema(
   {
@@ -8,7 +7,7 @@ const cestaSchema = new mongoose.Schema(
       default: Date.now,
     },
     divergente: {
-      type: bool,
+      type: Boolean,
       default: false,
     },
     motivoDivergencia: {
@@ -52,7 +51,7 @@ cestaSchema.virtual('nomeInstituicao', {
   justOne: true,
 });
 
-cestaSchema.pre('save', function(next) {
+cestaSchema.pre('save', function (next) {
   this.populate({
     path: 'familia',
     select: '-__v',
@@ -60,7 +59,7 @@ cestaSchema.pre('save', function(next) {
   next();
 });
 
-cestaSchema.pre('save', function(next) {
+cestaSchema.pre('save', function (next) {
   this.populate({
     path: 'instituicao',
     select: '-__v',
@@ -68,7 +67,7 @@ cestaSchema.pre('save', function(next) {
   next();
 });
 
-cestaSchema.pre('save', function(next) {
+cestaSchema.pre('save', function (next) {
   this.populate({
     path: 'user',
     select: '-__v',

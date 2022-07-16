@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer');
-const sgTransport = require('nodemailer-sendgrid-transport');
 const pug = require('pug');
 const htmlToText = require('html-to-text');
 
@@ -13,13 +12,14 @@ module.exports = class Email {
   createTransport() {
     if (process.env.NODE_ENV === 'production') {
       // Sendgrid
-      return nodemailer.createTransport(
-        sgTransport({
-          auth: {
-            api_key: process.env.SENDGRID_API_KEY,
-          },
-        })
-      );
+      return nodemailer.createTransport({
+        host: 'smtp.sendgrid.net',
+        port: 587,
+        auth: {
+          user: 'apikey',
+          pass: process.env.SENDGRID_API_KEY,
+        },
+      });
     }
 
     return nodemailer.createTransport({
