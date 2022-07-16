@@ -10,11 +10,12 @@ process.on('uncaughtException', err => {
 dotenv.config({ path: './config.env' });
 const app = require('./app');
 
-console.log(
-  `DATABASE_ENV: ${process.env.DATABASE_ENV} || NODE_ENV: ${
-    process.env.NODE_ENV
-  } || DATABASE_ENV: ${process.env.TZ}`
-);
+// console.log(
+//   `DATABASE_ENV: ${process.env.DATABASE_ENV} || NODE_ENV: ${
+//     process.env.NODE_ENV
+//   } || TZ_ENV: ${process.env.TZ}`
+// );
+
 const DB =
   process.env.DATABASE_ENV === 'development'
     ? process.env.DATABASE_LOCAL

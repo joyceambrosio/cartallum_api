@@ -4,7 +4,7 @@
   "description": "Api Cartallum com node, express e mongodb",
   "main": "app.js",
   "scripts": {
-    "start": "SET TZ=America/Sao_Paulo&& node server.js",
+    "start": "node server.js",
     "start:dev": "SET TZ=America/Sao_Paulo&& nodemon server.js",
     "start:prod": "SET TZ=America/Sao_Paulo&& SET DATABASE_ENV=production&&SET NODE_ENV=production&&nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
