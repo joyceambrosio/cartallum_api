@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 
 const instituicaoSchema = new mongoose.Schema(
   {
@@ -80,7 +79,7 @@ instituicaoSchema.virtual('cestasTotal', {
   count: true,
 });
 
-instituicaoSchema.pre('save', function(next) {
+instituicaoSchema.pre('save', function (next) {
   if (!this.sigla) {
     const matches = this.nome.match(/\b(\w)/g);
     const acronym = matches.join('');
@@ -89,7 +88,7 @@ instituicaoSchema.pre('save', function(next) {
   next();
 });
 
-instituicaoSchema.statics.determinarTipo = async function(instituicaoId) {
+instituicaoSchema.statics.determinarTipo = async function (instituicaoId) {
   const numeroMatriz = await this.aggregate([
     { $match: { tipo: 'matriz' } },
     {
@@ -114,7 +113,7 @@ instituicaoSchema.statics.determinarTipo = async function(instituicaoId) {
   }
 };
 
-instituicaoSchema.post('save', function() {
+instituicaoSchema.post('save', function () {
   this.constructor.determinarTipo(this.id);
 });
 
