@@ -5,7 +5,7 @@ const AppError = require('./../utils/app_error');
 const factory = require('./handler_factory');
 
 exports.setFieldsForAutoCompete = (req, res, next) => {
-  req.query.fields = 'id,name,photo,miniatura,role';
+  req.query.fields = 'id,name,photo,miniatura,role,email';
   next();
 };
 
