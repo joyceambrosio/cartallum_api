@@ -4,7 +4,7 @@ const factory = require('./handler_factory');
 exports.setForeingKeys = (req, res, next) => {
   if (!req.body.instituicao) req.body.instituicao = req.params.instituicaoId;
   if (!req.body.familia) req.body.familia = req.params.id;
-  if (!req.body.user) req.body.user = req.user.id;
+  if (!req.body.user) req.body.usuario = req.user.id;
   next();
 };
 

@@ -37,8 +37,6 @@ exports.injectComprovante = (req, res, next) => {
   next();
 };
 
-exports.getAllEnderecos = factory.getAll(Endereco);
-exports.getEndereco = factory.getOne(Endereco);
 exports.createEndereco = factory.createOneExclusive(Endereco);
 exports.updateEndereco = factory.updateOne(Endereco);
 exports.deleteEndereco = factory.deleteOne(Endereco);

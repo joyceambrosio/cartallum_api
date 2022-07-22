@@ -34,8 +34,92 @@ const familiaSchema = new mongoose.Schema(
     comprovanteRenda: {
       type: String,
     },
-    dataComprovante: {
+    dataComprovanteRenda: {
       type: Date,
+    },
+    comprovanteEndereco: {
+      type: String,
+    },
+    dataComprovanteEndereco: {
+      type: Date,
+    },
+    endereco: {
+      logradouro: {
+        type: String,
+
+        maxlength: [100, 'O endereço deve conter entre 5 e 100 caracteres'],
+        minlength: [5, 'O endereço deve conter entre 5 e 100 caracteres'],
+      },
+      bairro: {
+        type: String,
+      },
+      numero: {
+        type: String,
+      },
+      complemento: {
+        type: String,
+      },
+      pontoReferencia: {
+        type: String,
+      },
+      cep: {
+        type: String,
+      },
+      pais: {
+        type: String,
+        default: 'Brasil',
+      },
+      estado: {
+        type: String,
+
+        enum: {
+          values: [
+            'AC',
+            'AL',
+            'AP',
+            'AM',
+            'BA',
+            'CE',
+            'DF',
+            'ES',
+            'GO',
+            'MA',
+            'MT',
+            'MS',
+            'MG',
+            'PA',
+            'PB',
+            'PR',
+            'PE',
+            'PI',
+            'RJ',
+            'RN',
+            'RS',
+            'RO',
+            'RR',
+            'SC',
+            'SP',
+            'SE',
+            'TO',
+          ],
+          message: 'Por favor, insira um estado válido',
+        },
+      },
+      cidade: {
+        type: String,
+      },
+      criadoEm: {
+        type: Date,
+        default: Date.now,
+      },
+      local: {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+      },
     },
   },
   {
@@ -68,12 +152,6 @@ familiaSchema.virtual('criancasCount', {
     },
   },
   count: true,
-});
-
-familiaSchema.virtual('endereco', {
-  ref: 'Endereco',
-  foreignField: 'familia',
-  localField: '_id',
 });
 
 familiaSchema.virtual('cestas', {

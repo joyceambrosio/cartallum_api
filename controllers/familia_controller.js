@@ -18,9 +18,7 @@ exports.getAllFamilias = factory.getAll(Familia, [
   {
     path: 'criancasCount',
   },
-  {
-    path: 'endereco',
-  },
+
   {
     path: 'cestas',
     options: { sort: { criadoEm: -1 } },
@@ -44,9 +42,7 @@ exports.getFamilia = factory.getOne(Familia, [
   {
     path: 'criancasCount',
   },
-  {
-    path: 'endereco',
-  },
+
   {
     path: 'cestas',
     options: { sort: { criadoEm: -1 } },
@@ -78,6 +74,10 @@ function intersectArrays(arr, array) {
 
 exports.search = catchAsync(async (req, res, next) => {
   const familiaQuery = {};
+
+  // if (req.query.sort) familiaQuery.sort = req.query.sort;
+
+  // console.log(familiaQuery);
 
   if (req.query.renda)
     familiaQuery.renda = {
@@ -112,36 +112,40 @@ exports.search = catchAsync(async (req, res, next) => {
   if (Object.keys(cestasQuery).length !== 0)
     intersect = intersectArrays(intersect, cestasFiltered);
 
-  const result = await Familia.find({ _id: { $in: intersect } }).populate([
-    {
-      path: 'pessoas',
-      options: { sort: { responsavel: -1, idade: -1 } },
-    },
-    {
-      path: 'pessoasCount',
-    },
-    {
-      path: 'criancasCount',
-    },
-    {
-      path: 'endereco',
-    },
-    {
-      path: 'cestas',
-      options: { sort: { criadoEm: -1 } },
-      populate: {
-        path: 'nomeInstituicao',
-        select: 'nome -_id',
-      },
-    },
-    {
-      path: 'cestasCount',
-    },
-  ]);
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 100;
+  const skip = (page - 1) * limit;
 
-  // console.log(req.query);
+  const result = await Familia.find({ _id: { $in: intersect } })
+
+    .populate([
+      {
+        path: 'pessoas',
+        options: { sort: { responsavel: -1, idade: -1 } },
+      },
+      {
+        path: 'pessoasCount',
+      },
+      {
+        path: 'criancasCount',
+      },
+
+      {
+        path: 'cestas',
+        options: { sort: { criadoEm: -1 } },
+        populate: {
+          path: 'nomeInstituicao',
+          select: 'nome -_id',
+        },
+      },
+      {
+        path: 'cestasCount',
+      },
+    ])
+    .sort(req.query.sort)
+    .skip(skip)
+    .limit(limit);
   let finalResult = {};
-  //console.log(req.query.cestasCount);
   finalResult = result.filter(value => {
     let insert = true;
 
@@ -158,7 +162,6 @@ exports.search = catchAsync(async (req, res, next) => {
     }
 
     if (req.query.mesesSemReceberCestas) {
-      //console.log(value.cestasCount);
       if (value.cestasCount > 0) {
         const meses = moment(Date.now()).diff(moment(value.cestas[0].criadoEm));
 
@@ -183,73 +186,10 @@ exports.search = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     results: finalResult.length,
-    // finalResult: finalResult.length,
     data: {
-      cestasFiltered: cestasFiltered,
-      pessoasFiltered: pessoasFiltered,
-      familiasFiltered: familiasFiltered,
-      intersect: intersect,
       data: finalResult,
-
-      // data: result,
     },
   });
-
-  // let filter = {};
-
-  // if (req.params.familiaId)
-  //   filter = {
-  //     familia: req.params.familiaId,
-  //   };
-
-  // const features = new APIFeatures(Familia.find(filter), familiaQuery)
-  //   .filter()
-  //   .sort()
-  //   .limitFields()
-  //   .paginate();
-
-  // const doc = await features.query;
-
-  // const cursor = await Familia.find(features.query)
-  //   .populate({
-  //     path: 'pessoas',
-  //   })
-  //   .cursor();
-
-  // const regexSearch = new RegExp(searchValue, 'i');
-
-  // const docs = [];
-  // for (
-  //   let child = await cursor.next();
-  //   child != null;
-  //   child = await cursor.next()
-  // ) {
-  //   for (let i = 0; i < child.pessoas.length; i++) {
-  //     if (searchValue) {
-  //       if (
-  //         child.pessoas[i].nome.match(regexSearch) ||
-  //         child.pessoas[i].cpf.match(regexSearch)
-  //       ) {
-  //         docs.push(child);
-
-  //         break;
-  //       }
-  //     } else {
-  //     }
-  //   }
-  // }
-
-  // if (!docs || docs.length == 0) {
-  //   return next(new AppError('Nenhum documento encontrado a busca.', 404));
-  // }
-
-  // res.status(200).json({
-  //   status: 'success',
-  //   results: doc.length,
-  //   data: {
-  //     data: docs,
-  //   },
-  // });
 });
 
 const multerStorage = multer.memoryStorage();
@@ -268,15 +208,35 @@ exports.upload = upload.single('comprovante');
 
 exports.injectPathToUpload = (req, res, next) => {
   if (!req.file) return next();
+
+  if (req.file.originalname.includes('comprovanteRenda'))
+    req.folder = 'comprovante_renda';
+  if (req.file.originalname.includes('comprovanteEndereco'))
+    req.folder = 'comprovante_endereco';
+
   req.file.filename = `familia-${req.params.id}.jpeg`;
-  req.folder = 'comprovante_renda';
 
   next();
 };
 
 exports.injectComprovante = (req, res, next) => {
   if (!req.file) return next();
-  if (req.firebaseUrl) req.body.comprovanteRenda = req.firebaseUrl;
-  if (req.firebaseUrl) req.body.dataComprovante = Date.now();
+
+  if (req.file.originalname.includes('comprovanteRenda')) {
+    if (req.firebaseUrl) req.body.comprovanteRenda = req.firebaseUrl;
+    if (req.firebaseUrl) req.body.dataComprovanteRenda = Date.now();
+  }
+  if (req.file.originalname.includes('comprovanteEndereco')) {
+    if (req.firebaseUrl) req.body.comprovanteEndereco = req.firebaseUrl;
+    if (req.firebaseUrl) req.body.dataComprovanteEndereco = Date.now();
+  }
+
+  next();
+};
+
+exports.reqCheck = (req, res, next) => {
+  console.log(req.body);
+  console.log(req.query);
+
   next();
 };

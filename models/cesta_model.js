@@ -51,7 +51,14 @@ cestaSchema.virtual('nomeInstituicao', {
   justOne: true,
 });
 
-cestaSchema.pre('save', function (next) {
+cestaSchema.virtual('nomeUsuario', {
+  ref: 'User',
+  foreignField: '_id',
+  localField: 'usuario',
+  justOne: true,
+});
+
+cestaSchema.pre('save', function(next) {
   this.populate({
     path: 'familia',
     select: '-__v',
@@ -59,7 +66,7 @@ cestaSchema.pre('save', function (next) {
   next();
 });
 
-cestaSchema.pre('save', function (next) {
+cestaSchema.pre('save', function(next) {
   this.populate({
     path: 'instituicao',
     select: '-__v',
@@ -67,7 +74,7 @@ cestaSchema.pre('save', function (next) {
   next();
 });
 
-cestaSchema.pre('save', function (next) {
+cestaSchema.pre('save', function(next) {
   this.populate({
     path: 'user',
     select: '-__v',

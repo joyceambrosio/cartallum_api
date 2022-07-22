@@ -13,6 +13,27 @@ exports.setForeingKeys = (req, res, next) => {
 };
 
 exports.getAllInstituicoes = factory.getAll(Instituicao);
+
+exports.getAllInstituicoesRelatorio = factory.getAll(Instituicao, [
+  {
+    path: 'membros',
+    populate: [{ path: 'user', model: 'user', select: '-__v' }],
+  },
+  {
+    path: 'endereco',
+    select: '-__v',
+  },
+  {
+    path: 'cestas',
+  },
+  {
+    path: 'cestasAno',
+  },
+  {
+    path: 'cestasTotal',
+  },
+]);
+
 exports.getInstituicao = factory.getOne(Instituicao, [
   {
     path: 'membros',
@@ -47,7 +68,7 @@ exports.createInstituicao = catchAsync(async (req, res, next) => {
     populate: [{ path: 'user', model: 'user', select: '-__v' }],
   });
 
-  if (full.tipo == 'matriz') {
+  if (full.tipo === 'matriz') {
     await Usuario.findByIdAndUpdate(
       req.user.id,
       {

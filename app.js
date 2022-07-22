@@ -10,12 +10,12 @@ const compression = require('compression');
 const AppError = require('./utils/app_error');
 const globalErrorHandler = require('./controllers/error_controller');
 const userRouter = require('./routes/user_routes');
-const enderecoRouter = require('./routes/endereco_routes');
 const enderecoInstituicaoRouter = require('./routes/endereco_instituicao_routes');
 const pessoaRouter = require('./routes/pessoa_routes');
 const instituicaoRouter = require('./routes/instituicao_routes');
 const familiaRouter = require('./routes/familia_router');
 const userInstituicaoRouter = require('./routes/user_instituicao_routes');
+const atividadesRouter = require('./routes/atividade_routes');
 const configuracaoRouter = require('./routes/configuracoes_routes');
 
 const app = express();
@@ -73,12 +73,12 @@ app.use((req, res, next) => {
 
 // 3) ROUTES
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/enderecos', enderecoRouter);
 app.use('/api/v1/enderecosInstituicao', enderecoInstituicaoRouter);
 app.use('/api/v1/pessoas', pessoaRouter);
 app.use('/api/v1/familias', familiaRouter);
 app.use('/api/v1/instituicoes', instituicaoRouter);
 app.use('/api/v1/userInstituicao', userInstituicaoRouter);
+app.use('/api/v1/atividades', atividadesRouter);
 app.use('/api/v1/configuracao', configuracaoRouter);
 
 app.all('*', (req, res, next) => {

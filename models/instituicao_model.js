@@ -60,6 +60,12 @@ instituicaoSchema.virtual('endereco', {
   localField: '_id',
 });
 
+instituicaoSchema.virtual('cestas', {
+  ref: 'Cesta',
+  foreignField: 'instituicao',
+  localField: '_id',
+});
+
 instituicaoSchema.virtual('cestasAno', {
   ref: 'Cesta',
   foreignField: 'instituicao',
@@ -79,7 +85,7 @@ instituicaoSchema.virtual('cestasTotal', {
   count: true,
 });
 
-instituicaoSchema.pre('save', function (next) {
+instituicaoSchema.pre('save', function(next) {
   if (!this.sigla) {
     const matches = this.nome.match(/\b(\w)/g);
     const acronym = matches.join('');
@@ -88,7 +94,7 @@ instituicaoSchema.pre('save', function (next) {
   next();
 });
 
-instituicaoSchema.statics.determinarTipo = async function (instituicaoId) {
+instituicaoSchema.statics.determinarTipo = async function(instituicaoId) {
   const numeroMatriz = await this.aggregate([
     { $match: { tipo: 'matriz' } },
     {
@@ -98,7 +104,7 @@ instituicaoSchema.statics.determinarTipo = async function (instituicaoId) {
     },
   ]);
 
-  if (numeroMatriz.length == 0) {
+  if (numeroMatriz.length === 0) {
     await Instituicao.findByIdAndUpdate(instituicaoId, {
       tipo: 'matriz',
       verificado: true,
@@ -113,7 +119,7 @@ instituicaoSchema.statics.determinarTipo = async function (instituicaoId) {
   }
 };
 
-instituicaoSchema.post('save', function () {
+instituicaoSchema.post('save', function() {
   this.constructor.determinarTipo(this.id);
 });
 
