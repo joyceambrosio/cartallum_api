@@ -1,4 +1,5 @@
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
@@ -17,6 +18,8 @@ const familiaRouter = require('./routes/familia_router');
 const userInstituicaoRouter = require('./routes/user_instituicao_routes');
 const atividadesRouter = require('./routes/atividade_routes');
 const configuracaoRouter = require('./routes/configuracoes_routes');
+
+const swaggerFile = require('./swagger/swagger_output.json');
 
 const app = express();
 
@@ -71,6 +74,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 // 3) ROUTES
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/enderecosInstituicao', enderecoInstituicaoRouter);
