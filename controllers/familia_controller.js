@@ -79,6 +79,20 @@ exports.search = catchAsync(async (req, res, next) => {
 
   // console.log(familiaQuery);
 
+  if (req.query.bairro)
+    familiaQuery['endereco.bairro'] = {
+      $regex: req.query.bairro,
+      $options: 'i',
+    };
+
+  if (req.query.cep)
+    familiaQuery['endereco.cep'] = {
+      $regex: req.query.cep,
+      $options: 'i',
+    };
+
+  console.log(familiaQuery);
+
   if (req.query.renda)
     familiaQuery.renda = {
       $gte: req.query.renda.gte,
@@ -148,6 +162,10 @@ exports.search = catchAsync(async (req, res, next) => {
   let finalResult = {};
   finalResult = result.filter(value => {
     let insert = true;
+
+    if (value.pessoasCount == 0) {
+      insert = false;
+    }
 
     if (req.query.pessoasCount) {
       if (value.pessoasCount > req.query.pessoasCount.lte) {
