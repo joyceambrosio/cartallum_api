@@ -132,18 +132,3 @@ exports.getAll = (Model, popOptions) =>
     });
   });
 
-/*
-TODO: 
-  separar endereço de família e institiução (gps etc)
-  com nested routes para os dois.
-  facilita manutenção no futuro.
-
-  criar cestas. lógica é a mesma de endereços 
-  criar doação de cestas com usuário e local
-
-  adicionar usuários na criação de famílias e adição e update
-  de pessoas.
-
-  
-
-*/

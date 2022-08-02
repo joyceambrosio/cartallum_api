@@ -98,13 +98,16 @@ exports.isOwner = (Model, idField) =>
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check of it's there
   let token;
+
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt;
+  } else if (req.cookies) {
+    if (req.cookies.jwt) {
+      token = req.cookies.jwt;
+    }
   }
 
   if (!token) {
@@ -208,7 +211,7 @@ exports.forgotPasswordCode = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
       status: 'success',
-      message: 'Código enviado para e-mail',
+      message: 'Código enviado para o e-mail',
     });
   } catch (err) {
     user.passwordResetToken = undefined;
@@ -248,7 +251,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     res.status(200).json({
       status: 'success',
       data: resetURL,
-      message: 'Token enviado para e-mail',
+      message: 'Token enviado para o e-mail',
     });
   } catch (err) {
     user.passwordResetToken = undefined;
