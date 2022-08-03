@@ -10,7 +10,14 @@ router.use(authController.protect);
 router
   .route('/')
   .get(pessoaController.getAllPessoas)
-  .post(pessoaController.setForeingKeys, pessoaController.createPessoa);
+  .post(
+    pessoaController.setForeingKeys,
+    pessoaController.upload,
+    pessoaController.injectPathToUpload,
+    firebase.uploadImageToFirebase,
+    pessoaController.injectComprovante,
+    pessoaController.createPessoa
+  );
 
 router
   .route('/:id')

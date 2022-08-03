@@ -549,7 +549,47 @@
               "type": "array",
               "items": {
                 "type": "object",
-                "$ref": "#/definitions/Pessoa"
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "nome": {
+                    "type": "string",
+                    "example": "João da Silva"
+                  },
+                  "dataNascimento": {
+                    "type": "string"
+                  },
+                  "sexo": {
+                    "type": "string",
+                    "description": "Aceita [f, m, o]"
+                  },
+                  "responsavel": {
+                    "type": "boolean",
+                    "description": "Responsável pela família"
+                  },
+                  "telefone": {
+                    "type": "string",
+                    "description": "Telefone de contato"
+                  },
+                  "comprovante": {
+                    "type": "string",
+                    "description": "Documento comprovante de identidade"
+                  },
+                  "dataComprovante": {
+                    "type": "string"
+                  },
+                  "criadoEm": {
+                    "type": "string"
+                  },
+                  "familia": {
+                    "type": "string"
+                  },
+                  "local": {
+                    "type": "object",
+                    "$ref": "#/definitions/Local"
+                  }
+                }
               }
             }
           },
@@ -571,19 +611,10 @@
             "type": "string"
           },
           {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "familia": {
-                  "example": "any"
-                },
-                "user": {
-                  "example": "any"
-                }
-              }
-            }
+            "name": "photo",
+            "in": "formData",
+            "required": false,
+            "type": "file"
           },
           {
             "name": "pessoa",
@@ -596,19 +627,58 @@
           }
         ],
         "responses": {
-          "responses": {
-            "200": {
-              "description": "success",
-              "schema": {
-                "$ref": "#/definitions/Pessoa"
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "nome": {
+                  "type": "string",
+                  "example": "João da Silva"
+                },
+                "dataNascimento": {
+                  "type": "string"
+                },
+                "sexo": {
+                  "type": "string",
+                  "description": "Aceita [f, m, o]"
+                },
+                "responsavel": {
+                  "type": "boolean",
+                  "description": "Responsável pela família"
+                },
+                "telefone": {
+                  "type": "string",
+                  "description": "Telefone de contato"
+                },
+                "comprovante": {
+                  "type": "string",
+                  "description": "Documento comprovante de identidade"
+                },
+                "dataComprovante": {
+                  "type": "string"
+                },
+                "criadoEm": {
+                  "type": "string"
+                },
+                "familia": {
+                  "type": "string"
+                },
+                "local": {
+                  "type": "object",
+                  "$ref": "#/definitions/Local"
+                }
               }
-            },
-            "404": {
-              "description": "Nenhum documento encontrado para o id fornecido"
-            },
-            "500": {
-              "description": "ValidatorError"
             }
+          },
+          "404": {
+            "description": "Nenhum documento encontrado para o id fornecido"
+          },
+          "500": {
+            "description": "ValidatorError"
           }
         }
       }
@@ -716,8 +786,31 @@
     "/api/v1/instituicoes/report": {
       "get": {
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/InstituicaoRelatorio"
+            }
+          },
+          "404": {
+            "description": "Nenhum documento encontrado para o id fornecido"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     },
 
@@ -1116,11 +1209,18 @@
               "$ref": "#/definitions/UserInstituicao"
             }
           },
+          "400": {
+            "description": "Entrada inválida ou duplicada."
+          },
           "404": {
             "description": "Nenhum documento encontrado para o id fornecido"
           },
+          "401": {
+            "description": "Não autorizado"
+          },
+
           "500": {
-            "description": "ValidatorError"
+            "description": "Internal Server Error"
           }
         }
       },
@@ -1205,7 +1305,33 @@
               "type": "array",
               "items": {
                 "type": "object",
-                "$ref": "#/definitions/Cesta"
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "criadoEm": {
+                    "type": "string"
+                  },
+                  "divergente": {
+                    "type": "boolean"
+                  },
+                  "motivoDivergencia": {
+                    "type": "string"
+                  },
+                  "familia": {
+                    "type": "string"
+                  },
+                  "instituicao": {
+                    "type": "string"
+                  },
+                  "usuario": {
+                    "type": "string"
+                  },
+                  "local": {
+                    "type": "object",
+                    "$ref": "#/definitions/Local"
+                  }
+                }
               }
             }
           },
@@ -1240,14 +1366,48 @@
           "200": {
             "description": "success",
             "schema": {
-              "$ref": "#/definitions/Cesta"
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "criadoEm": {
+                  "type": "string"
+                },
+                "divergente": {
+                  "type": "boolean"
+                },
+                "motivoDivergencia": {
+                  "type": "string"
+                },
+                "familia": {
+                  "type": "string"
+                },
+                "instituicao": {
+                  "type": "string"
+                },
+                "usuario": {
+                  "type": "string"
+                },
+                "local": {
+                  "type": "object",
+                  "$ref": "#/definitions/Local"
+                }
+              }
             }
+          },
+          "400": {
+            "description": "Entrada inválida ou duplicada."
           },
           "404": {
             "description": "Nenhum documento encontrado para o id fornecido"
           },
+          "401": {
+            "description": "Não autorizado"
+          },
+
           "500": {
-            "description": "ValidatorError"
+            "description": "Internal Server Error"
           }
         }
       }
@@ -1693,7 +1853,10 @@
       "type": "object",
       "properties": {
         "coordinates": {
-          "type": "array"
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
         }
       }
     },
@@ -1738,9 +1901,6 @@
           "example": "admin"
         },
         "usuario": {
-          "type": "string"
-        },
-        "instituicao": {
           "type": "string"
         },
         "criadoEm": {
@@ -1827,6 +1987,69 @@
             "type": "object",
             "$ref": "#/definitions/EnderecosInstituicao"
           }
+        }
+      }
+    },
+    "InstituicaoRelatorio": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "nome": {
+          "type": "string",
+          "example": "Instituição Matriz"
+        },
+        "sigla": {
+          "type": "string",
+          "example": "IM"
+        },
+        "tipo": {
+          "type": "string",
+          "description": "aceita os valores [matriz, instituicao]"
+        },
+        "telefone": {
+          "type": "string"
+        },
+        "verificado": {
+          "type": "boolean"
+        },
+        "verificador": {
+          "type": "string"
+        },
+        "criadoEm": {
+          "type": "string"
+        },
+        "local": {
+          "type": "object",
+          "$ref": "#/definitions/Local"
+        },
+        "endereco": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/EnderecosInstituicao"
+          }
+        },
+        "membros": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/UserInstituicao"
+          }
+        },
+        "cestas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Cesta"
+          }
+        },
+        "cestasAno": {
+          "type": "number"
+        },
+        "cestasTotal": {
+          "type": "number"
         }
       }
     },
@@ -1942,13 +2165,6 @@
           "type": "string",
           "description": "Telefone de contato"
         },
-        "comprovante": {
-          "type": "string",
-          "description": "Documento comprovante de identidade"
-        },
-        "dataComprovante": {
-          "type": "string"
-        },
         "criadoEm": {
           "type": "string"
         },
@@ -1976,14 +2192,7 @@
         "motivoDivergencia": {
           "type": "string"
         },
-
         "familia": {
-          "type": "string"
-        },
-        "instituicao": {
-          "type": "string"
-        },
-        "usuario": {
           "type": "string"
         },
         "local": {
